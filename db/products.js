@@ -3,7 +3,14 @@ const client = require("../config/db");
 
 exports.getAllProducts = async () => {
   let sql =
-    `SELECT * FROM products order by calendar_dt DESC`;
+    `SELECT 
+    to_char(calendar_dt , 'YYYY-MM-DD') as calendar_dt,
+      "name",
+      "key",
+      src,
+      price,
+      origin    
+    FROM products order by calendar_dt DESC`;
   try {
     let res = await client.query(sql)
     return res.rows
