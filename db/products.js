@@ -21,8 +21,24 @@ exports.getAllProducts = async () => {
 };
 
 exports.getProductByDay = async (key) => {
+  let values = []
+  values.push(key)
   let sql =
-    `SELECT * FROM products WHERE "key" = '${key}'`;
+    `SELECT * FROM products WHERE "key" = $1`;
+    console.log(sql)
+  try {
+    let res = await client.query(sql, values)
+    return res.rows
+  } catch (err) {
+    console.log(err.stack)
+    return false
+  }
+};
+
+exports.getLastUpdate = async () => {
+  let sql =
+    `SELECT max(end_load_dt) as collected_dt FROM load_status`;
+    console.log(sql)
   try {
     let res = await client.query(sql)
     return res.rows
