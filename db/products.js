@@ -38,7 +38,6 @@ exports.getProductByDay = async (key) => {
 exports.getLastUpdate = async () => {
   let sql =
     `SELECT max(end_load_dt) as collected_dt FROM load_status`;
-    console.log(sql)
   try {
     let res = await client.query(sql)
     return res.rows
