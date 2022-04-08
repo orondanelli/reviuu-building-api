@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 let db = require('../db/products')
-let utils = require('../helpers/utils'
-)
+let utils = require('../helpers/utils')
+let moment = require('moment');
 /* GET users listing. */
 router.get('/', async function(req, res) {
   let products = await db.getAllProducts()
@@ -18,7 +18,8 @@ router.get('/lastUpdate', async function(req, res) {
   let date = await db.getLastUpdate()
   let response = date.map((item) => {
     return {
-      collected_dt: utils.timeSCL(item.collected_dt)
+      collected_dt: utils.timeSCL(item.collected_dt),
+      time_ago: moment(utils.timeSCL(item.collected_dt), "MM-DD-AAAA HH:mm:SS").locale('es').fromNow()
     }
   })
   res.json(response)
