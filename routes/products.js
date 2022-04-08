@@ -17,9 +17,10 @@ router.get('/item/:key', async function(req, res) {
 router.get('/lastUpdate', async function(req, res) {
   let date = await db.getLastUpdate()
   let response = date.map((item) => {
+    let time = utils.timeSCL(item.collected_dt)
     return {
-      collected_dt: utils.timeSCL(item.collected_dt),
-      time_ago: moment(utils.timeSCL(item.collected_dt), "MM-DD-AAAA HH:mm:SS").locale('es').fromNow()
+      collected_dt: time,
+      time_ago: moment(time, "MM-DD-AAAA HH:mm:SS").locale('es').fromNow()
     }
   })
   res.json(response)
