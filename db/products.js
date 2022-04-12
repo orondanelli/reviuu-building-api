@@ -24,7 +24,8 @@ exports.getAllProducts = async () => {
         coalesce(previous_price, actual_price) as previous_price,
         actual_price,
       coalesce(TRUNC(((actual_price - previous_price)/actual_price  ::NUMERIC)*100::numeric,1),0) as var  
-      from priceR where "key" IN ('194262999') order by calendar_dt ASC
+      from priceR 
+      order by calendar_dt DESC
       `;
   try {
     let res = await client.query(sql)
