@@ -3,14 +3,29 @@ const client = require("../config/db");
 
 exports.getAllProducts = async () => {
   let sql =
-    `SELECT 
-    to_char(calendar_dt , 'YYYY-MM-DD') as calendar_dt,
-      "name",
-      "key",
-      src,
-      price,
-      origin    
-    FROM products order by calendar_dt DESC`;
+    `WITH priceR AS (
+      SELECT 
+        to_char(calendar_dt , 'YYYY-MM-DD') as calendar_dt ,
+        "key",  
+        "name",
+        src,
+        brand,
+        origin,
+        price as actual_price  ,
+        lead(price) over (partition by "key" order by calendar_dt DESC) as previous_price  
+      FROM products 
+      ) select
+        calendar_Dt,
+        "key",  
+        "name",
+        src,
+        brand,
+        origin,
+        coalesce(previous_price, actual_price) as previous_price,
+        actual_price,
+      coalesce(TRUNC(((actual_price - previous_price)/actual_price  ::NUMERIC)*100::numeric,1),0) as var  
+      from priceR where "key" IN ('194262999') order by calendar_dt ASC
+      `;
   try {
     let res = await client.query(sql)
     return res.rows
