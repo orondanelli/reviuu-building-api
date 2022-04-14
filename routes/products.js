@@ -20,7 +20,7 @@ router.get('/lastUpdate', async function(req, res) {
     let time = utils.timeSCL(item.collected_dt)
     return {
       collected_dt: time,
-      time_ago: moment(time, "MM-DD-AAAA HH:mm:SS").locale('es').fromNow()
+      time_ago: moment(time, "DD-MM-YYYY HH:mm:SS").locale('es').fromNow()
     }
   })
   res.json(response)
