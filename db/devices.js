@@ -1,31 +1,26 @@
 "use strict";
 const client = require("../config/db");
 
-exports.getAllProducts = async () => {
+exports.getAllDevices = async () => {
   let sql =
-    `WITH priceR AS (
-      SELECT 
-        to_char(calendar_dt , 'YYYY-MM-DD') as calendar_dt ,
-        "key",  
-        "name",
-        src,
-        brand,
-        origin,
-        price as actual_price  ,
-        lead(price) over (partition by "key" order by calendar_dt DESC) as previous_price  
-      FROM products 
-      ) select
-        calendar_Dt,
-        "key",  
-        "name",
-        src,
-        brand,
-        origin,
-        coalesce(previous_price, actual_price) as previous_price,
-        actual_price,
-      coalesce(TRUNC(((actual_price - previous_price)/actual_price  ::NUMERIC)*100::numeric,1),0) as var  
-      from priceR 
-      order by calendar_dt DESC
+    `select
+    de.id,
+    de.hash_id,
+    de."name",
+    de.brand,
+    de.status,
+    de.building_id ,
+    b."name" as "building name",
+    de.device_type_id,
+    dt."name" as "device_name"
+  from
+    public.devices de
+  inner join device_type dt 
+  on
+    (de.device_type_id = dt.id)
+  inner join buildings b 
+  on
+    (de.building_id = b.id) 
       `;
   try {
     let res = await client.query(sql)
